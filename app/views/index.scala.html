@@ -1,7 +1,15 @@
-@(message: String)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Spirograph-inator</title>
+	<link rel="stylesheet" href="@routes.Assets.at("stylesheets/style.css")">
+</head>
+<body>
+	<canvas keepalive="true" id="canvas" resize="true" data-paper-keepalive="true"></canvas>
 
-@main("Spirovolution") {
-    <div id="display"></div>
-
-    <script src="@routes.Assets.at("javascripts/main.js")"></script>
-}
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/paper-full.min.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
+	<script type="text/paperscript" canvas="canvas" src="@route.Assets.at("javascripts/shapes.js")"></script>
+</body>
+</html>
