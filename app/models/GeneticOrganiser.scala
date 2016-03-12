@@ -4,7 +4,7 @@ import models.util.db.DBHandler
 
 import scala.util.Random
 
-class GeneticOrganiser() {
+object GeneticOrganiser {
 
   val generationSize = 100
   val parentPercentage = 0.5

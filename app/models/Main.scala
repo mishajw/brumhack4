@@ -6,15 +6,13 @@ object Main {
   def main(args: Array[String]) {
     DBHandler.resetTables()
 
-    val go = new GeneticOrganiser
-
-    go.generateInitialOrganisms()
+    GeneticOrganiser.generateInitialOrganisms()
 
     val os = DBHandler.allOrganisms
 
     println(os.mkString("\n"))
 
-    go.moveToNextGeneration()
+    GeneticOrganiser.moveToNextGeneration()
 
   }
 }
