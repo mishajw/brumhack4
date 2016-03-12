@@ -1,7 +1,7 @@
 import scala.util.Random
 
 package object models {
-  case class Variable(name: String, lowerBound: Double, upperBound: Double) {
+  case class FieldDefinition(name: String, lowerBound: Double, upperBound: Double) {
     val range = upperBound - lowerBound
 
     /**

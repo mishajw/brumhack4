@@ -1,6 +1,5 @@
 package models
 
-import akka.routing.Pool
 import models.util.db.DBHandler
 
 import scala.util.Random
@@ -26,18 +25,9 @@ object GeneticOrganiser {
     * The variables for this session
     */
   val variables = Seq(
-    Variable("shpSides", 2, 12),
-    Variable("shpNum", 1, 5000),
-    Variable("shpRad", 0, 1),
-    Variable("shpRot", 0, 100),
-    Variable("shpOffset", 0, 1),
-    Variable("shpSize", 0, 1),
-    Variable("shpColR", 0, 1),
-    Variable("shpColG", 0, 1),
-    Variable("shpColB", 0, 1),
-    Variable("shpColA", 0.1, 0.5),
-    Variable("angleRev", 0, 1),
-    Variable("rotRev", 0, 1)
+    FieldDefinition("rot", 0, 1),
+    FieldDefinition("offset", 0, 1),
+    FieldDefinition("colour", 0, 1)
   )
 
   /**
@@ -88,7 +78,7 @@ object GeneticOrganiser {
 
   /**
     * Breed a set of parents to create children
- *
+    *
     * @param parents the parents to breed
     * @return the lovely ity-bity babies
     */
@@ -103,7 +93,7 @@ object GeneticOrganiser {
 
   /**
     * Mutate children (not in a cruel way?)
- *
+    *
     * @param os the organism to mutate
     * @return the mutated organisms
     */
@@ -124,7 +114,7 @@ object GeneticOrganiser {
 
   /**
     * Get a variable by a name
- *
+    *
     * @param name the name of the variable
     * @return the variable
     */
@@ -134,7 +124,7 @@ object GeneticOrganiser {
 
   /**
     * Check if everything has been rated
- *
+    *
     * @return true if everything is rated
     */
   private def everythingRated(pool: String) =
@@ -142,7 +132,7 @@ object GeneticOrganiser {
 
   /**
     * Generate a random organism
- *
+    *
     * @return the new organism
     */
   def randomOrganism: Organism = {

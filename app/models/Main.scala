@@ -8,6 +8,8 @@ object Main {
 
     val pool = "secondary"
 
+
+
     GeneticOrganiser.generateInitialOrganisms(pool)
     println(DBHandler.allOrganisms.mkString("\n"))
 

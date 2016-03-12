@@ -1,6 +1,8 @@
 package models.util.db
 
-import models.Organism
+import javassist.compiler.ast.Variable
+
+import models.{FieldDefinition, Organism}
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scalikejdbc._
@@ -45,7 +47,8 @@ object DBHandler {
       sql"""
           CREATE TABLE pool (
             id SERIAL PRIMARY KEY,
-            title TEXT
+            title TEXT,
+            fields JSON
           )
          """,
       sql"""
@@ -128,7 +131,7 @@ object DBHandler {
   def insertOrganismAsActive(o: Organism, pool: String): Long = {
     val id = insertOrganism(o)
 
-    val poolId = insertPool(pool)
+    val poolId = getPoolId(pool).get
 
     sql"""
           INSERT INTO active (organism_id, pool_id)
@@ -157,16 +160,21 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
-  def insertPool(pool: String): Long = {
-    sql"""
-         SELECT id FROM pool WHERE title = $pool
-       """.map(_.long("id")).single.apply() match {
+  def insertPool(pool: String, fields: Seq[FieldDefinition]): Long = {
+    getPoolId(pool) match {
       case Some(id) => id
       case None =>
         sql"""
-              INSERT INTO pool (title) VALUES ($pool)
+              INSERT INTO pool (title, fields)
+              VALUES ($pool, CAST(${fieldDefinitionsToJson(fields)} AS JSON))
            """.updateAndReturnGeneratedKey().apply()
     }
+  }
+
+  def getPoolId(pool: String) = {
+    sql"""
+         SELECT id FROM pool WHERE title = $pool
+       """.map(_.long("id")).single.apply()
   }
 
   /**
@@ -202,7 +210,7 @@ object DBHandler {
     */
   def removeOrganism(o: Organism, pool: String): Unit = {
 
-    val poolId = insertPool(pool)
+    val poolId = getPoolId(pool).get
 
     sql"""
          DELETE FROM active
@@ -254,6 +262,16 @@ object DBHandler {
           k -> JDouble(v.toDouble)
         }).toList
       )
+
+    compact(render(json))
+  }
+
+  private def fieldDefinitionsToJson(fields: Seq[FieldDefinition]): String = {
+    val json = JArray(fields.map { f => JObject(List(
+      "name" -> JString(f.name),
+      "upper_bound" -> JDouble(f.upperBound),
+      "lower_bound" -> JDouble(f.lowerBound)
+    ))}.toList)
 
     compact(render(json))
   }
