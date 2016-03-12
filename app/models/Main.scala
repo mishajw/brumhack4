@@ -6,17 +6,11 @@ object Main {
   def main(args: Array[String]) {
     DBHandler.resetTables()
 
-    DBHandler.insertOrganismAsActive(new Organism(
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
-    ))
+    val go = new GeneticOrganiser
 
-    DBHandler.insertOrganismAsActive(new Organism(
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
-    ))
-
-    DBHandler.insertOrganismAsActive(new Organism(
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
-    ))
+    for (i <- 0 to 10) {
+      DBHandler.insertOrganismAsActive(go.randomOrganism)
+    }
 
     val os = DBHandler.allOrganisms
 
