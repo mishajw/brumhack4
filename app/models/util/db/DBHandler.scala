@@ -161,6 +161,12 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
+  /**
+    * Insert a pool
+    * @param pool title of the pool
+    * @param fields the fields in the pool
+    * @return id of the pool
+    */
   def insertPool(pool: String, fields: String): Long = {
     getPoolId(pool) match {
       case Some(id) => id
@@ -172,12 +178,20 @@ object DBHandler {
     }
   }
 
+  /**
+    * @param pool title of the pool
+    * @return id of the pool
+    */
   def getPoolId(pool: String) = {
     sql"""
          SELECT id FROM pool WHERE title = $pool
        """.map(_.long("id")).single.apply()
   }
 
+  /**
+    * @param pool title of the pool
+    * @return the field definitions of the pool
+    */
   def getPoolFieldDefinitions(pool: String): Seq[FieldDefinition] = {
     sql"""
          SELECT fields
