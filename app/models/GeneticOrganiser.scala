@@ -50,6 +50,12 @@ class GeneticOrganiser() {
       .foreach(DBHandler.insertOrganism)
   }
 
+  def generateInitialOrganisms() = {
+    for (i <- 0 to generationSize) {
+      DBHandler.insertOrganismAsActive(randomOrganism)
+    }
+  }
+
   private def bestParents(): Seq[Organism] = {
     val all = DBHandler.activeOrganisms.sortBy(_.rating)
     all.take((all.length * parentPercentage).toInt)

@@ -8,9 +8,7 @@ object Main {
 
     val go = new GeneticOrganiser
 
-    for (i <- 0 to 10) {
-      DBHandler.insertOrganismAsActive(go.randomOrganism)
-    }
+    go.generateInitialOrganisms()
 
     val os = DBHandler.allOrganisms
 
