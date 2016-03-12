@@ -84,3 +84,17 @@ p, h1, .row input {
 .row #n5 {
 	color: #1cbb00;
 }
+
+@media (max-width: 640px) {
+	.vote {
+		position: relative;
+		width: 100%;
+	}
+	canvas {
+		position: relative;
+		width: 100%;
+		top: 0;
+		left: 0;
+		right: 0;
+	}
+}
