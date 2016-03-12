@@ -35,20 +35,23 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
-  def setupPool(pool: String) = Action { implicit request =>
+  def setupPoolAction(pool: String) = Action { implicit request =>
     val rawJson = try {
-      request.body.asFormUrlEncoded.get("fields").head
+      val rawJson = request.body.asFormUrlEncoded.get("fields").head
+      setupPool(rawJson)
     } catch {
       case e: Exception =>
-        fieldDefinitionsToJson(defaultFieldDefinitions)
+        setupPool(pool)
     }
 
+    Ok("Done")
+  }
+
+  def setupPool(pool: String, rawJson: String = fieldDefinitionsToJson(defaultFieldDefinitions)): Unit = {
     // Create the pool
     DBHandler.insertPool(pool, rawJson)
     // Create the first generation of the pool
     GeneticOrganiser.generateInitialOrganisms(pool)
-
-    Ok("Done")
   }
 
   /**
