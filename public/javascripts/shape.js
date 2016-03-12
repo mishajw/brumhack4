@@ -1,15 +1,25 @@
 // JSON CONSTs
 var shpSides = 3,
+    	// number of shapes
 	shpNum = 50,
+	// radius from the centre
 	shpRad = 0.15,
+	// shapes initial rotation
 	shpRot = 0,
+	// how much the shape moves out
 	shpOffset = 0,
+	// size of the shape
 	shpSize = 0.06,
+	// shape colour
 	shpCol = "rgba(255, 255, 255, 0.15)",
+	// turns percentage values to pixels
 	mult = view.size._height,
+	// how many times the shape rotates in a single outer rotation
 	angleRev = 0,
+	// number of outer rotations
 	rotRev = 1
 ;
+
 if(getUrlVars()["rad"] != undefined){
 	shpRad = parseFloat(getUrlVars()["rad"]);
 }
@@ -33,6 +43,7 @@ var shapes = [];
 var shapeGroup;
 makeShapes();
 
+// creates a shape
 function makeShape(sides, size, posX, posY, rot){
 
 	var shape;
@@ -52,6 +63,7 @@ function makeShape(sides, size, posX, posY, rot){
 
 }
 
+// creates all the shapes in the image
 function makeShapes() {
 	for (var i = 0; i < shpNum; i++) {
 		shapes[i] = makeShape(shpSides, shpSize * mult, view.center._x, ((0.5 - shpRad) * mult) - (shpOffset * i), shpRot);
@@ -61,6 +73,7 @@ function makeShapes() {
 	transformShapes();
 }
 
+// displays the shapes
 function showShapes() {
 	shapes.forEach( function(shp, i) {
 		shp.fillColor = shpCol;
@@ -68,6 +81,7 @@ function showShapes() {
 	});
 }
 
+// transforms all of the shapes
 function transformShapes() {
 	var angle = (360 / shpNum) * rotRev;
 	shapes.forEach( function(shp, i) {
