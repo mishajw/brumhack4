@@ -41,6 +41,13 @@ object GeneticOrganiser {
     val children = mutate(breed(parents), pool)
     val progressedParents = Random.shuffle(parents).take(generationSize - breedSize)
 
+    progressedParents
+      .foreach(o => {
+        o.voteAmount = 0
+        o.lastGeneration = generation
+        DBHandler.organismMovedToGeneration(o)
+      })
+
     lastGeneration
       .filterNot(progressedParents.contains)
       .foreach(DBHandler.removeOrganism(_, pool))

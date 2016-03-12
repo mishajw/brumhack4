@@ -7,7 +7,7 @@ class Organism(val id: Option[Long],
                val fields: Map[String, Double],
                var rating: Double,
                var voteAmount: Int,
-               var firstGeneration: Int,
+               val firstGeneration: Int,
                var lastGeneration: Int) {
 
   /**

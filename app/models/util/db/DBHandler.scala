@@ -162,6 +162,18 @@ object DBHandler {
   }
 
   /**
+    * Update the organism's generation fields
+    * @param o the organism
+    */
+  def organismMovedToGeneration(o: Organism): Unit = {
+    sql"""
+         UPDATE organism
+         SET vote_amount = ${o.voteAmount}, last_generation = ${o.lastGeneration}
+         WHERE id = ${o.id.get}
+       """.update.apply()
+  }
+
+  /**
     * Insert a pool
     * @param pool title of the pool
     * @param fields the fields in the pool
