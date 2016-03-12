@@ -22,15 +22,6 @@ object GeneticOrganiser {
   var generation: Int = 0
 
   /**
-    * The variables for this session
-    */
-  val variables = Seq(
-    FieldDefinition("rot", 0, 1),
-    FieldDefinition("offset", 0, 1),
-    FieldDefinition("colour", 0, 1)
-  )
-
-  /**
     * Check if there should be a new generation
     */
   def checkForNewGeneration(pool: String): Unit = {
@@ -47,7 +38,7 @@ object GeneticOrganiser {
 
     val lastGeneration = DBHandler.activeOrganisms(pool)
     val parents = bestParents(lastGeneration)
-    val children = mutate(breed(parents))
+    val children = mutate(breed(parents), pool)
     val progressedParents = Random.shuffle(parents).take(generationSize - breedSize)
 
     lastGeneration
@@ -63,7 +54,7 @@ object GeneticOrganiser {
     */
   def generateInitialOrganisms(pool: String) = {
     for (i <- 0 to generationSize) {
-      DBHandler.insertOrganismAsActive(randomOrganism, pool)
+      DBHandler.insertOrganismAsActive(randomOrganism(pool), pool)
     }
   }
 
@@ -97,13 +88,13 @@ object GeneticOrganiser {
     * @param os the organism to mutate
     * @return the mutated organisms
     */
-  private def mutate(os: Seq[Organism]): Seq[Organism] = os.map { o =>
+  private def mutate(os: Seq[Organism], pool: String): Seq[Organism] = os.map { o =>
     Random.nextDouble() < mutationProbability match {
       case true => new Organism(o.id,
         {
           o.fields.map { case (k, v) =>
             val range: Double = (Random.nextDouble() * 2) - 1
-            k -> (v + (range * mutationAmount * getVariable(k).range))
+            k -> (v + (range * mutationAmount * getVariable(k, pool).range))
           }
         },
         o.rating, o.voteAmount, o.firstGeneration, o.lastGeneration
@@ -118,8 +109,11 @@ object GeneticOrganiser {
     * @param name the name of the variable
     * @return the variable
     */
-  private def getVariable(name: String) = {
-    variables.filter(_.name == name).head
+  private def getVariable(name: String, pool: String) = {
+    DBHandler
+      .getPoolFieldDefinitions(pool)
+      .filter(_.name == name)
+      .head
   }
 
   /**
@@ -135,7 +129,12 @@ object GeneticOrganiser {
     *
     * @return the new organism
     */
-  def randomOrganism: Organism = {
-    new Organism(variables.map(_.random).toMap, generation)
+  def randomOrganism(pool: String): Organism = {
+    new Organism(
+      DBHandler
+        .getPoolFieldDefinitions(pool)
+        .map(_.random)
+        .toMap,
+      generation)
   }
 }

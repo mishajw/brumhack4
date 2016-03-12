@@ -4,6 +4,7 @@ import javassist.compiler.ast.Variable
 
 import models.{FieldDefinition, Organism}
 import org.json4s._
+import org.json4s.jackson.JsonMethods
 import org.json4s.jackson.JsonMethods._
 import scalikejdbc._
 
@@ -175,6 +176,26 @@ object DBHandler {
     sql"""
          SELECT id FROM pool WHERE title = $pool
        """.map(_.long("id")).single.apply()
+  }
+
+  def getPoolFieldDefinitions(pool: String): Seq[FieldDefinition] = {
+    sql"""
+         SELECT fields
+         FROM pool
+         WHERE title = $pool
+       """.map(_.string("fields")).single.apply() match {
+      case Some(rawJson) =>
+        val json: JArray = JsonMethods.parse(rawJson).asInstanceOf[JArray]
+        for {
+          JObject(field) <- json.arr
+          JField("name", JString(name)) <- field
+          JField("upper_bound", JDouble(upperBound)) <- field
+          JField("lower_bound", JDouble(lowerBound)) <- field
+        } yield {
+          FieldDefinition(name, lowerBound, upperBound)
+        }
+      case None => Seq()
+    }
   }
 
   /**
