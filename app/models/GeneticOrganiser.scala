@@ -23,24 +23,6 @@ object GeneticOrganiser {
   var generation: Int = 0
 
   /**
-    * A variable that can be changed
- *
-    * @param name the name of the variable
-    * @param lowerBound max value
-    * @param upperBound min value
-    */
-  case class Variable(name: String, lowerBound: Double, upperBound: Double) {
-    val range = upperBound - lowerBound
-
-    /**
-      * @return a random in-range value
-      */
-    def random = {
-      name -> (lowerBound + (range * Random.nextDouble()))
-    }
-  }
-
-  /**
     * The variables for this session
     */
   val variables = Seq(
