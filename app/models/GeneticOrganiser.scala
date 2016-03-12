@@ -113,7 +113,9 @@ object GeneticOrganiser {
         {
           o.fields.map { case (k, v) =>
             val range: Double = (Random.nextDouble() * 2) - 1
-            k -> (v + (range * mutationAmount * getVariable(k, pool).range))
+            val variable: FieldDefinition = getVariable(k, pool)
+            val newV = v + (range * mutationAmount * variable.range)
+            k -> Math.min(Math.max(newV, variable.lowerBound), variable.upperBound)
           }
         },
         o.rating, o.voteAmount, o.firstGeneration, o.lastGeneration
