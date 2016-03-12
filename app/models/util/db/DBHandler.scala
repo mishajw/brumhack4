@@ -7,6 +7,8 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scalikejdbc._
 
+import scala.util.Random
+
 object DBHandler {
   lazy implicit val session = {
     Class.forName("org.postgresql.Driver")
@@ -72,7 +74,17 @@ object DBHandler {
        """
       .map(r => resultSetToOrganism(r))
       .list.apply()
+  }
 
+  def organismToRate: Option[Organism] = {
+    activeOrganisms.sortBy(_.voteAmount) match {
+      case Seq() =>
+        None
+      case os =>
+        val head = os.head
+        val sameVoteAmount = os.filter(_.voteAmount == head.voteAmount)
+        Some(sameVoteAmount(Random.nextInt(sameVoteAmount.length)))
+    }
   }
 
   def insertOrganismAsActive(o: Organism): Long = {
