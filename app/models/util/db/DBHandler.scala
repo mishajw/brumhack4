@@ -132,6 +132,8 @@ object DBHandler {
     }
   }
 
+  def removeOrganism(o: Organism): Unit = {}
+
   private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(
     r.longOpt("id"),
     jsonFieldsToMap(r.string("fields")),

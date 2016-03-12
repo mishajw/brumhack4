@@ -3,6 +3,8 @@ package models
 import org.json4s.JsonAST.JObject
 import org.json4s._
 
+import scala.util.Random
+
 class Organism(val id: Option[Long],
                val fields: Map[String, Double],
                var rating: Double,
@@ -12,6 +14,14 @@ class Organism(val id: Option[Long],
 
   def this(fields: Map[String, Double], generation: Int) =
     this(None, fields, 0, 0, generation, generation)
+
+  def this(mummy: Organism, daddy: Organism, generation: Int) = {
+    this({
+      mummy.fields.map { case (k, v) =>
+        k -> (v + daddy.fields(k)) / 2
+      }
+    }, generation)
+  }
 
   def toJson: JObject = {
     val json: JObject = JObject(List(

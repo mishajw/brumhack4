@@ -15,5 +15,8 @@ object Main {
     val os = DBHandler.allOrganisms
 
     println(os.mkString("\n"))
+
+    go.moveToNextGeneration()
+
   }
 }
