@@ -13,10 +13,10 @@ var shpSides = 3,
 	// size of the shape
 	shpSize = 0.06,
 	// shape colour
-	colR = 1,
-	colG = 1,
-	colB = 1,
-	colA = 0.15,
+	shpColR = 1,
+	shpColG = 1,
+	shpColB = 1,
+	shpColA = 0.15,
 	// turns percentage values to pixels
 	mult = view.size._height,
 	// how many times the shape rotates in a single outer rotation
@@ -24,6 +24,7 @@ var shpSides = 3,
 	// number of outer rotations
 	rotRev = 1
 ;
+
 
 if(getUrlVars()["rad"] != undefined){
 	shpRad = parseFloat(getUrlVars()["rad"]);
@@ -46,7 +47,6 @@ if(getUrlVars()["size"] != undefined){
 
 var shapes = [];
 var shapeGroup;
-makeShapes();
 
 // creates a shape
 function makeShape(sides, size, posX, posY, rot){
@@ -76,13 +76,14 @@ function makeShapes() {
 
 	shapeGroup = new Group(shapes);
 	transformShapes();
+    console.log(shapes);
 }
 
 // displays the shapes
 function showShapes() {
 	shapes.forEach( function(shp, i) {
-		shp.fillColor = "rgba(" + (colR * 255) + "," + (colG * 255) + "," + (colB * 255) + "," + colA + ")";
-		shp.strokeColor = "rgba(" + (colR * 255) + "," + (colG * 255) + "," + (colB * 255) + "," + (colA * 1.25) + ")";
+		shp.fillColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + shpColA + ")";
+		shp.strokeColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + (shpColA * 1.25) + ")";
 	});
 }
 
@@ -109,7 +110,6 @@ function resizeCanvas() {
 	console.log(shapeGroup.position._x * 2, canvas.width);
 }
 
-resizeCanvas();
 
 
 // Read a page's GET URL variables and return them as an associative array.
@@ -125,3 +125,53 @@ function getUrlVars()
     }
     return vars;
 }
+
+$.ajax({
+      dataType: "json",
+      url: "/next",
+})
+.done(function(toMuchData) {
+    console.log("WOOOO");
+   // load variables from JSON
+    shpId = toMuchData.id;
+    data = toMuchData.fields;
+    console.log(data);
+    shpSides = Math.round(data.shpSides);
+    shpNum = Math.round(data.shpNum);
+    console.log(shpNum);
+    shpRad = data.shpRad;
+    shpRot = data.shpRot;
+    shpOffset = data.shpOffset;
+    shpSize = data.shpSize;
+    shpColR = data.shpColR * 255;
+    shpColG = data.shpColG * 255;
+    shpColB = data.shpColB * 255;
+    shpColA = data.shpColA;
+    angleRev = data.angleRev;
+    rotRev = data.rotRev;
+    // do the shape things
+    makeShapes();
+    resizeCanvas(); 
+
+})
+.fail(function( data ) {
+    console.log("HELP!");
+});
+
+$(".row input").on('click', function(event) {
+	$.ajax({
+		url: '/rating',
+		type: 'POST',
+		data: {
+			id: shpId,
+			rating: $(this).val(),
+		},
+	})
+	.done(function() {
+	    document.location.reload(false);	
+	})
+	.fail(function() {
+		console.log("error");
+	});
+});
+   

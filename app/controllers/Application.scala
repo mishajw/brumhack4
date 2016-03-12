@@ -13,9 +13,19 @@ object Application extends Controller {
   private val defaultPool = "main"
 
   private val defaultFieldDefinitions = Seq(
-    FieldDefinition("rotatable", 0, 1),
-    FieldDefinition("offset", 0, 1),
-    FieldDefinition("colour", 0, 1)
+    FieldDefinition("shpSides", 1, 7),
+    FieldDefinition("shpNum", 0, 500),
+    FieldDefinition("shpRad", 0, 1),
+    FieldDefinition("shpRot", 0, 100),
+    FieldDefinition("shpOffset", 0, 4),
+    FieldDefinition("shpSize", 0, 0.5),
+    FieldDefinition("shpColR", 0, 1),
+    FieldDefinition("shpColG", 0, 1),
+    FieldDefinition("shpColB", 0, 1),
+    FieldDefinition("shpColA", 0.1, 0.5),
+    FieldDefinition("angleRev", 1, 10),
+    FieldDefinition("rotRev", 0, 8)
+
   )
 
   /**
