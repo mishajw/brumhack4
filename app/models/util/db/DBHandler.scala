@@ -19,12 +19,18 @@ object DBHandler {
     AutoSession
   }
 
-  def resetTables() = {
+  /**
+    * Reset all the tables in the database
+    */
+  def resetTables(): Unit = {
     dropTables()
     initialiseTables()
   }
 
-  def initialiseTables() = {
+  /**
+    * Initialise all tables
+    */
+  def initialiseTables(): Unit = {
     Seq(
       sql"""
           CREATE TABLE organism (
@@ -44,7 +50,10 @@ object DBHandler {
     ).map(_.update.apply())
   }
 
-  def dropTables() = {
+  /**
+    * Drop all tables
+    */
+  def dropTables(): Unit = {
     Seq(
       sql"""
            DROP TABLE IF EXISTS active
@@ -55,6 +64,10 @@ object DBHandler {
     ).map(_.update.apply())
   }
 
+  /**
+    * Get all active organisms
+    * @return
+    */
   def activeOrganisms: Seq[Organism] = {
     sql"""
          SELECT id, fields, score, vote_amount, first_generation, last_generation
@@ -65,6 +78,10 @@ object DBHandler {
       .list.apply()
   }
 
+  /**
+    * All organism to have ever existed
+    * @return
+    */
   def allOrganisms: Seq[Organism] = {
     sql"""
          SELECT id, fields, score, vote_amount, first_generation, last_generation
@@ -74,6 +91,9 @@ object DBHandler {
       .list.apply()
   }
 
+  /**
+    * @return the next organism to be rated
+    */
   def organismToRate: Option[Organism] = {
     activeOrganisms.sortBy(_.voteAmount) match {
       case Seq() =>
@@ -85,6 +105,11 @@ object DBHandler {
     }
   }
 
+  /**
+    * Insert an organism and make it active
+    * @param o the organism to insert
+    * @return the id of the organism
+    */
   def insertOrganismAsActive(o: Organism): Long = {
     val id = insertOrganism(o)
 
@@ -96,6 +121,11 @@ object DBHandler {
     id
   }
 
+  /**
+    * Insert an organism without making it active
+    * @param o organism to insert
+    * @return the id of the organism
+    */
   def insertOrganism(o: Organism): Long = {
     sql"""
          INSERT INTO organism (fields, score, vote_amount, first_generation, last_generation)
@@ -109,6 +139,12 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
+  /**
+    * Register a rating of an organism
+    * @param id the ID of the organism
+    * @param rating the new rating of the organism
+    * @return whether or not the registration succeeded
+    */
   def rateOrganism(id: Long, rating: Double): Boolean = {
     val orgOpt: Option[Organism] = sql"""
          SELECT * FROM organism
@@ -130,6 +166,9 @@ object DBHandler {
     }
   }
 
+  /**
+    * @param o the organism to make inactive
+    */
   def removeOrganism(o: Organism): Unit = {
     sql"""
          DELETE FROM active
@@ -137,6 +176,11 @@ object DBHandler {
        """.update.apply()
   }
 
+  /**
+    * Cast a result set from postgres to an organism
+    * @param r the result set
+    * @return the organism
+    */
   private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(
     r.longOpt("id"),
     jsonFieldsToMap(r.string("fields")),
@@ -145,6 +189,11 @@ object DBHandler {
     r.int("first_generation"),
     r.int("last_generation"))
 
+  /**
+    * Cast a JSON string to a map of variables
+    * @param rawJson the raw JSON string
+    * @return map of variable name to value
+    */
   private def jsonFieldsToMap(rawJson: String): Map[String, Double] = {
     parse(rawJson) match {
       case JObject(vars: List[(String, JsonAST.JValue)]) =>
@@ -155,6 +204,11 @@ object DBHandler {
     }
   }
 
+  /**
+    * Cast a map of variables to a JSON string
+    * @param map map of variable name to value
+    * @return the raw JSON string
+    */
   private def mapToJsonFields(map: Map[String, Double]): String = {
     val json: JObject =
       JObject(
