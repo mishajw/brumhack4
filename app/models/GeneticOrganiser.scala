@@ -38,16 +38,17 @@ class GeneticOrganiser() {
   def moveToNextGeneration(): Unit = {
     generation += 1
 
-    val parents = bestParents()
+    val lastGeneration = DBHandler.activeOrganisms
+    val parents = bestParents(lastGeneration)
     val children = mutate(breed(parents))
     val progressedParents = Random.shuffle(parents).take(generationSize - breedSize)
 
-    parents
-      .filter(progressedParents.contains)
+    lastGeneration
+      .filterNot(progressedParents.contains)
       .foreach(DBHandler.removeOrganism)
 
     children
-      .foreach(DBHandler.insertOrganism)
+      .foreach(DBHandler.insertOrganismAsActive)
   }
 
   def generateInitialOrganisms() = {
@@ -56,8 +57,8 @@ class GeneticOrganiser() {
     }
   }
 
-  private def bestParents(): Seq[Organism] = {
-    val all = DBHandler.activeOrganisms.sortBy(_.rating)
+  private def bestParents(os: Seq[Organism]): Seq[Organism] = {
+    val all = os.sortBy(_.rating)
     all.take((all.length * parentPercentage).toInt)
   }
 
