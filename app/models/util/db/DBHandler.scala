@@ -161,13 +161,13 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
-  def insertPool(pool: String, fields: Seq[FieldDefinition]): Long = {
+  def insertPool(pool: String, fields: String): Long = {
     getPoolId(pool) match {
       case Some(id) => id
       case None =>
         sql"""
               INSERT INTO pool (title, fields)
-              VALUES ($pool, CAST(${fieldDefinitionsToJson(fields)} AS JSON))
+              VALUES ($pool, CAST($fields AS JSON))
            """.updateAndReturnGeneratedKey().apply()
     }
   }
@@ -283,16 +283,6 @@ object DBHandler {
           k -> JDouble(v.toDouble)
         }).toList
       )
-
-    compact(render(json))
-  }
-
-  private def fieldDefinitionsToJson(fields: Seq[FieldDefinition]): String = {
-    val json = JArray(fields.map { f => JObject(List(
-      "name" -> JString(f.name),
-      "upper_bound" -> JDouble(f.upperBound),
-      "lower_bound" -> JDouble(f.lowerBound)
-    ))}.toList)
 
     compact(render(json))
   }

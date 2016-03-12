@@ -18,6 +18,18 @@ object Application extends Controller {
     Ok(views.html.index())
   }
 
+  def setupPool(pool: String) = Action { implicit request =>
+    try {
+      val rawJson = request.body.asFormUrlEncoded.get("fields").head
+
+      Ok("Done")
+    } catch {
+      case e: Exception => errorJson("You need to POST a fields variable as valid JSON")
+    }
+
+    Ok("")
+  }
+
   /**
     * Get the next organism to rate
     */
