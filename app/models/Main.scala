@@ -7,7 +7,7 @@ object Main {
     DBHandler.resetTables()
 
     val o = new Organism(
-      Map("x" -> 1, "y" -> 2, "z" -> 3),
+      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0),
       1, 2, 3, 4
     )
 

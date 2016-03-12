@@ -1,6 +1,8 @@
 package models.util.db
 
 import models.Organism
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 import scalikejdbc._
 
 object DBHandler {
@@ -89,11 +91,23 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
-  private def jsonFieldsToMap(rawJson: String): Map[String, Any] = {
-    Map()
+  private def jsonFieldsToMap(rawJson: String): Map[String, Double] = {
+    parse(rawJson) match {
+      case JObject(vars: List[(String, JsonAST.JValue)]) =>
+        vars.map { case JField(k, JDouble(v)) =>
+          k -> v
+        }.toMap
+    }
   }
 
-  private def mapToJsonFields(map: Map[String, Any]): String = {
-    "{}"
+  private def mapToJsonFields(map: Map[String, Double]): String = {
+    val json: JObject =
+      JObject(
+        map.map({ case (k, v) =>
+          k -> JDouble(v.toDouble)
+        }).toList
+      )
+
+    compact(render(json))
   }
 }

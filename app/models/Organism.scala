@@ -1,6 +1,6 @@
 package models
 
-class Organism( val fields: Map[String, Any],
+class Organism( val fields: Map[String, Double],
                 val score: Int, val voteAmount: Int,
                 val firstGeneration: Int,
                 val lastGeneration: Int) {
