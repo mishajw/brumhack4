@@ -53,18 +53,24 @@ object DBHandler {
     ).map(_.update.apply())
   }
 
-  def getAllOrganisms(): Seq[Organism] = {
+  def activeOrganisms: Seq[Organism] = {
     sql"""
          SELECT fields, score, vote_amount, first_generation, last_generation
          FROM active A, organism O
          WHERE A.organism_id = O.id
-       """.map(r => new Organism(
-      jsonFieldsToMap(r.string("fields")),
-      r.int("score"),
-      r.int("vote_amount"),
-      r.int("first_generation"),
-      r.int("last_generation")
-    )).list.apply()
+       """
+      .map(r => resultSetToOrganism(r))
+      .list.apply()
+  }
+
+  def allOrganisms: Seq[Organism] = {
+    sql"""
+         SELECT fields, score, vote_amount, first_generation, last_generation
+         FROM organism
+       """
+      .map(r => resultSetToOrganism(r))
+      .list.apply()
+
   }
 
   def insertOrganismAsActive(o: Organism): Long = {
@@ -90,6 +96,13 @@ object DBHandler {
          )
        """.updateAndReturnGeneratedKey().apply()
   }
+
+  private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(
+    jsonFieldsToMap(r.string("fields")),
+    r.int("score"),
+    r.int("vote_amount"),
+    r.int("first_generation"),
+    r.int("last_generation"))
 
   private def jsonFieldsToMap(rawJson: String): Map[String, Double] = {
     parse(rawJson) match {

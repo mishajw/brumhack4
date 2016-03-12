@@ -11,9 +11,9 @@ object Main {
       1, 2, 3, 4
     )
 
-    DBHandler.insertOrganismAsActive(o)
+    DBHandler.insertOrganism(o)
 
-    val os = DBHandler.getAllOrganisms()
+    val os = DBHandler.allOrganisms()
 
     println(os.mkString("\n"))
   }
