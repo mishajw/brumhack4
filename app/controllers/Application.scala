@@ -3,9 +3,8 @@ package controllers
 import models.GeneticOrganiser
 import models.util.db.DBHandler
 import org.json4s.JValue
-import org.json4s.JsonAST.{JString, JObject}
+import org.json4s.JsonAST.{JObject, JString}
 import org.json4s.jackson.JsonMethods
-import play.api._
 import play.api.mvc._
 
 object Application extends Controller {

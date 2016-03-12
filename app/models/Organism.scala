@@ -3,8 +3,6 @@ package models
 import org.json4s.JsonAST.JObject
 import org.json4s._
 
-import scala.util.Random
-
 class Organism(val id: Option[Long],
                val fields: Map[String, Double],
                var rating: Double,

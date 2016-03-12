@@ -1,7 +1,5 @@
 package models.util.db
 
-import java.text.ParseException
-
 import models.Organism
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
