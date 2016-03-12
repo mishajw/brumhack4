@@ -10,7 +10,7 @@ import play.api.mvc._
 
 object Application extends Controller {
 
-  private val defaultPool = "main"
+  val defaultPool = "main"
 
   private val defaultFieldDefinitions = Seq(
     FieldDefinition("shpSides", 1, 7),
