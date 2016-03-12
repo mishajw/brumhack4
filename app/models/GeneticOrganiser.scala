@@ -44,9 +44,18 @@ object GeneticOrganiser {
     * The variables for this session
     */
   val variables = Seq(
-    Variable("rot", 0, 1),
-    Variable("offset", 0, 1),
-    Variable("colour", 0, 1)
+    Variable("shpSides", 2, 12),
+    Variable("shpNum", 1, 5000),
+    Variable("shpRad", 0, 1),
+    Variable("shpRot", 0, 100),
+    Variable("shpOffset", 0, 1),
+    Variable("shpSize", 0, 1),
+    Variable("shpColR", 0, 1),
+    Variable("shpColG", 0, 1),
+    Variable("shpColB", 0, 1),
+    Variable("shpColA", 0.1, 0.5),
+    Variable("angleRev", 0, 1),
+    Variable("rotRev", 0, 1)
   )
 
   /**
