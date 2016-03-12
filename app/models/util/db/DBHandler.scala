@@ -132,7 +132,12 @@ object DBHandler {
     }
   }
 
-  def removeOrganism(o: Organism): Unit = {}
+  def removeOrganism(o: Organism): Unit = {
+    sql"""
+         DELETE FROM active
+         WHERE organism_id = ${o.id.get}
+       """.update.apply()
+  }
 
   private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(
     r.longOpt("id"),
