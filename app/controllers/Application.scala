@@ -9,10 +9,16 @@ import play.api.mvc._
 
 object Application extends Controller {
 
+  /**
+    * Home page
+    */
   def index = Action {
     Ok(views.html.index("Your new application is ready."))
   }
 
+  /**
+    * Get the next organism to rate
+    */
   def getNext = Action {
     DBHandler.organismToRate match {
       case None => errorJson("No organisms left.")
@@ -20,6 +26,9 @@ object Application extends Controller {
     }
   }
 
+  /**
+    * Rate an organism by ID
+    */
   def rateOrganism = Action { implicit request =>
     Seq("id", "rating").map(request.getQueryString) match {
       case Seq(Some(idStr), Some(ratingStr)) =>
@@ -42,9 +51,16 @@ object Application extends Controller {
     }
   }
 
+  /**
+    * JSON object to string
+    */
   private def stringifyJson(json: JValue) =
     JsonMethods.pretty(JsonMethods.render(json))
 
+  /**
+    * Serve an error in JSON format
+    * @param errorMsg the error to display
+    */
   private def errorJson(errorMsg: String) = {
     BadRequest(stringifyJson(JObject(List(
       "error" -> JString(errorMsg))
