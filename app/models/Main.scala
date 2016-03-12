@@ -7,21 +7,15 @@ object Main {
     DBHandler.resetTables()
 
     DBHandler.insertOrganismAsActive(new Organism(
-      None,
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0),
-      1, 100, 3, 4
+      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
     ))
 
     DBHandler.insertOrganismAsActive(new Organism(
-      None,
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0),
-      1, 2, 3, 4
+      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
     ))
 
     DBHandler.insertOrganismAsActive(new Organism(
-      None,
-      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0),
-      1, 2, 3, 4
+      Map("x" -> 1.0, "y" -> 2.0, "z" -> 3.0), 1
     ))
 
     val os = DBHandler.allOrganisms

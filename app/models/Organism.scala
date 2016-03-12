@@ -10,6 +10,8 @@ class Organism(val id: Option[Long],
                var firstGeneration: Int,
                var lastGeneration: Int) {
 
+  def this(fields: Map[String, Double], generation: Int) =
+    this(None, fields, 0, 0, generation, generation)
 
   def toJson: JObject = {
     val json: JObject = JObject(List(
