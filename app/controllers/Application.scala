@@ -33,7 +33,10 @@ object Application extends Controller {
         fieldDefinitionsToJson(defaultFieldDefinitions)
     }
 
+    // Create the pool
     DBHandler.insertPool(pool, rawJson)
+    // Create the first generation of the pool
+    GeneticOrganiser.generateInitialOrganisms(pool)
 
     Ok("Done")
   }
