@@ -1,15 +1,22 @@
 package controllers
 
-import models.GeneticOrganiser
+import models.{FieldDefinition, GeneticOrganiser}
 import models.util.db.DBHandler
-import org.json4s.JValue
+import org.json4s._
 import org.json4s.JsonAST.{JObject, JString}
 import org.json4s.jackson.JsonMethods
+import org.json4s.jackson.JsonMethods._
 import play.api.mvc._
 
 object Application extends Controller {
 
   private val defaultPool = "main"
+
+  private val defaultFieldDefinitions = Seq(
+    FieldDefinition("rotatable", 0, 1),
+    FieldDefinition("offset", 0, 1),
+    FieldDefinition("colour", 0, 1)
+  )
 
   /**
     * Home page
@@ -19,15 +26,16 @@ object Application extends Controller {
   }
 
   def setupPool(pool: String) = Action { implicit request =>
-    try {
-      val rawJson = request.body.asFormUrlEncoded.get("fields").head
-
-      Ok("Done")
+    val rawJson = try {
+      request.body.asFormUrlEncoded.get("fields").head
     } catch {
-      case e: Exception => errorJson("You need to POST a fields variable as valid JSON")
+      case e: Exception =>
+        fieldDefinitionsToJson(defaultFieldDefinitions)
     }
 
-    Ok("")
+    DBHandler.insertPool(pool, rawJson)
+
+    Ok("Done")
   }
 
   /**
@@ -80,6 +88,16 @@ object Application extends Controller {
       case e: Throwable =>
         errorJson("Input was not correct type")
     }
+  }
+
+  private def fieldDefinitionsToJson(fields: Seq[FieldDefinition]): String = {
+    val json = JArray(fields.map { f => JObject(List(
+      "name" -> JString(f.name),
+      "upper_bound" -> JDouble(f.upperBound),
+      "lower_bound" -> JDouble(f.lowerBound)
+    ))}.toList)
+
+    JsonMethods.compact(JsonMethods.render(json))
   }
 
   /**
