@@ -9,7 +9,9 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   jdbc, cache, ws, specs2 % Test,
   "org.scalikejdbc" %% "scalikejdbc" % "2.3.5",
-  "postgresql" % "postgresql" % "9.1-901-1.jdbc4"
+  "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+  "org.json4s"      %% "json4s-native"     % "3.3.0",
+  "org.json4s"      %% "json4s-jackson"    % "3.3.0"
 )
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
