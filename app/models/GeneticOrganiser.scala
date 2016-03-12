@@ -1,10 +1,13 @@
 package models
 
 import models.util.db.DBHandler
+import play.api.Logger
 
 import scala.util.Random
 
 object GeneticOrganiser {
+
+  private val log = Logger("Main")
 
   /**
     * Generation variables
@@ -25,6 +28,8 @@ object GeneticOrganiser {
     * Check if there should be a new generation
     */
   def checkForNewGeneration(pool: String): Unit = {
+    log.debug("Checking for new generation")
+
     if (!everythingRated(pool)) return
 
     moveToNextGeneration(pool)
@@ -34,12 +39,17 @@ object GeneticOrganiser {
     * Move to the next generation
     */
   def moveToNextGeneration(pool: String): Unit = {
+    log.debug("Moving to new generation")
+
     generation += 1
 
     val lastGeneration = DBHandler.activeOrganisms(pool)
     val parents = bestParents(lastGeneration)
     val children = mutate(breed(parents), pool)
     val progressedParents = Random.shuffle(parents).take(generationSize - breedSize)
+
+    log.debug(s"Got ${children.size} children from ${parents.size}")
+    log.debug(s"${progressedParents.size} progressed parents.")
 
     progressedParents
       .foreach(o => {
@@ -60,6 +70,8 @@ object GeneticOrganiser {
     * Generate the first generation of organisms
     */
   def generateInitialOrganisms(pool: String) = {
+    log.debug("Generating initial organisms")
+
     for (i <- 0 to generationSize) {
       DBHandler.insertOrganismAsActive(randomOrganism(pool), pool)
     }

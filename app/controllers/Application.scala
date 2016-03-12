@@ -6,9 +6,12 @@ import org.json4s._
 import org.json4s.JsonAST.{JObject, JString}
 import org.json4s.jackson.JsonMethods
 import org.json4s.jackson.JsonMethods._
+import play.api.Logger
 import play.api.mvc._
 
 object Application extends Controller {
+
+  private val log = Logger("Main")
 
   val defaultPool = "main"
 

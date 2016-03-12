@@ -6,11 +6,15 @@ import models.{FieldDefinition, Organism}
 import org.json4s._
 import org.json4s.jackson.JsonMethods
 import org.json4s.jackson.JsonMethods._
+import play.api.Logger
 import scalikejdbc._
 
 import scala.util.Random
 
 object DBHandler {
+
+  private val log = Logger("Main")
+
   lazy implicit val session = {
     Class.forName("org.postgresql.Driver")
     ConnectionPool.singleton("jdbc:postgresql://localhost/spirovolution", null, null)
@@ -26,6 +30,8 @@ object DBHandler {
     * Reset all the tables in the database
     */
   def resetTables(): Unit = {
+    log.info("Resetting tables")
+
     dropTables()
     initialiseTables()
   }
@@ -34,6 +40,8 @@ object DBHandler {
     * Initialise all tables
     */
   def initialiseTables(): Unit = {
+    log.info("Initialising tables")
+
     Seq(
       sql"""
           CREATE TABLE organism (
@@ -65,6 +73,8 @@ object DBHandler {
     * Drop all tables
     */
   def dropTables(): Unit = {
+    log.info("Dropping tables")
+
     Seq(
       sql"""
            DROP TABLE IF EXISTS active
@@ -149,6 +159,8 @@ object DBHandler {
     * @return the id of the organism
     */
   def insertOrganism(o: Organism): Long = {
+    log.info(s"Inserting an organism: $o")
+
     sql"""
          INSERT INTO organism (fields, score, vote_amount, first_generation, last_generation)
          VALUES (
@@ -163,9 +175,12 @@ object DBHandler {
 
   /**
     * Update the organism's generation fields
+ *
     * @param o the organism
     */
   def organismMovedToGeneration(o: Organism): Unit = {
+    log.info(s"Moving organism to new generation: $o")
+
     sql"""
          UPDATE organism
          SET vote_amount = ${o.voteAmount}, last_generation = ${o.lastGeneration}
@@ -175,6 +190,7 @@ object DBHandler {
 
   /**
     * Insert a pool
+ *
     * @param pool title of the pool
     * @param fields the fields in the pool
     * @return id of the pool
@@ -183,6 +199,7 @@ object DBHandler {
     getPoolId(pool) match {
       case Some(id) => id
       case None =>
+        log.info(s"Making new pool: $pool")
         sql"""
               INSERT INTO pool (title, fields)
               VALUES ($pool, CAST($fields AS JSON))
@@ -232,6 +249,8 @@ object DBHandler {
     * @return whether or not the registration succeeded
     */
   def rateOrganism(id: Long, rating: Double): Boolean = {
+    log.info(s"Rating organism #$id as $rating")
+
     val orgOpt: Option[Organism] = sql"""
          SELECT * FROM organism
          WHERE id = $id
@@ -256,6 +275,7 @@ object DBHandler {
     * @param o the organism to make inactive
     */
   def removeOrganism(o: Organism, pool: String): Unit = {
+    log.info(s"Removing organism $o from pool $pool")
 
     val poolId = getPoolId(pool).get
 
