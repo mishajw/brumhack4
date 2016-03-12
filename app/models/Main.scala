@@ -6,6 +6,14 @@ import org.json4s.jackson.JsonMethods._
 
 object Main {
   def main(args: Array[String]) {
+    if (args.nonEmpty && args(0) == "reset-tables") {
+      DBHandler.resetTables()
+    } else {
+      test()
+    }
+  }
+
+  private def test() = {
     DBHandler.resetTables()
 
     val pool = "main"
