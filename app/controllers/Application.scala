@@ -7,6 +7,8 @@ import org.json4s.JsonAST.{JObject, JString}
 import org.json4s.jackson.JsonMethods
 import play.api.mvc._
 
+import scala.util.Try
+
 object Application extends Controller {
 
   /**
@@ -30,24 +32,34 @@ object Application extends Controller {
     * Rate an organism by ID
     */
   def rateOrganism = Action { implicit request =>
-    Seq("id", "rating").map(request.getQueryString) match {
-      case Seq(Some(idStr), Some(ratingStr)) =>
-        try {
-          val id = idStr.toLong
-          val rating = ratingStr.toDouble
 
-          DBHandler.rateOrganism(id, rating) match {
-            case true =>
-              GeneticOrganiser.checkForNewGeneration()
-              Ok("Done")
-            case false => errorJson("Couldn't rate organism, doesn't exist")
-          }
-        } catch {
-          case e: Throwable =>
-            errorJson("Input was not correct type")
-        }
-      case _ =>
-        errorJson("Not enough parameters: need ID and rating")
+    if (request.body.asFormUrlEncoded.isEmpty)
+      errorJson("Couldn't get POST variables")
+
+    val postVars = request.body.asFormUrlEncoded.get.flatMap { case (k, vs) =>
+      vs.headOption match {
+        case Some(v) => Some(k -> v)
+        case None => None
+      }
+    }
+
+    if (!(postVars contains "id") || !(postVars contains "rating")) {
+      errorJson("Not enough parameters: need ID and rating")
+    }
+
+    try {
+      val id = postVars("id").toLong
+      val rating = postVars("rating").toDouble
+
+      DBHandler.rateOrganism(id, rating) match {
+        case true =>
+          GeneticOrganiser.checkForNewGeneration()
+          Ok("Done")
+        case false => errorJson("Couldn't rate organism, doesn't exist")
+      }
+    } catch {
+      case e: Throwable =>
+        errorJson("Input was not correct type")
     }
   }
 
@@ -59,6 +71,7 @@ object Application extends Controller {
 
   /**
     * Serve an error in JSON format
+ *
     * @param errorMsg the error to display
     */
   private def errorJson(errorMsg: String) = {
