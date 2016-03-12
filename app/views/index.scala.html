@@ -1,17 +1,37 @@
-@(message: String)
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>Spirograph-inator</title>
-	<link rel="stylesheet" href="@routes.Assets.at("stylesheets/style.css")">
+	<link rel="stylesheet" href="stylesheets/style.css">
 </head>
 <body>
+
+	<div class="vote">
+		<h1>Spirograph-inator</h1>
+		<p>What do you think of this spirograph?</p>
+		<p>1 = Terrible</p>
+		<p>5 = Amazing!</p>
+		<div class="row">
+			<input type="submit" value="1" name="submit" id="n1">
+			<input type="submit" value="2" name="submit" id="n2">
+			<input type="submit" value="3" name="submit" id="n3">
+			<input type="submit" value="4" name="submit" id="n4">
+			<input type="submit" value="5" name="submit" id="n5">
+		</div>
+		<p><small>Spirograph-inator uses machine learning and genetic algorithms to eventually display the "perfect" spirograph based on users' input.</small></p>
+	</div>
+
 	<canvas keepalive="true" id="canvas" resize="true" data-paper-keepalive="true"></canvas>
 
+	<script type="text/javascript" src="javascripts/paper-full.min.js"></script>
+	<script type="text/javascript" src="javascripts/jquery.min.js"></script>
+	<script type="text/paperscript" canvas="canvas" src="javascripts/shape.js"></script>
+	<script type="text/javascript" src="javascripts/post.js"></script>
+	<!--
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/paper-full.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
-	<script type="text/paperscript" canvas="canvas" src="@routes.Assets.at("javascripts/shape.js")"></script>
+	<script type="text/paperscript" canvas="canvas" src="@route.Assets.at("javascripts/shapes.js")"></script>
+	-->
 </body>
 </html>

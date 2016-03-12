@@ -5,6 +5,7 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 body {
 	background-color: #333;
 	width: 100%;
@@ -14,6 +15,72 @@ body {
 canvas {
 	background-color: #333;
 	height: 100vh;
-	width: 100vw;
+	width: calc(100vw - 400px);
 	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 400px;
+	right: 0;
+	background-color: #333;
+}
+
+.vote {
+	background-color: #555;
+	padding: 32px;
+	color:#fff;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 400px;
+	bottom: 0;
+}
+h1 {
+	font-size: 28pt;
+	text-transform: uppercase;
+}
+
+p {
+	font-size: 16pt;
+}
+
+p, h1, .row input {
+	line-height: 1.4;
+	margin-bottom: 16px;
+}
+.row:after {
+	clear:both;
+	content: '';
+	float: none;
+}
+.row input {
+	float:left;
+	width:20%;
+	min-height: 68px;
+	background-color: #fff;
+	border: 0;
+	color: #333;
+	font-weight: 700;
+	font-size: 28pt;
+}
+
+.row input:hover {
+	background-color: #ddd;
+}
+
+.row #n1 {
+	color: #b10200;
+}
+.row #n2 {
+	color: #a43a00;
+}
+.row #n3 {
+	color: #a45500;
+}
+.row #n4 {
+	color: #899d00;
+}
+.row #n5 {
+	color: #1cbb00;
 }

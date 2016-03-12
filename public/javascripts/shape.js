@@ -1,3 +1,5 @@
+var shpId = -1;
+
 // JSON CONSTs
 var shpSides = 3,
     	// number of shapes
@@ -11,7 +13,10 @@ var shpSides = 3,
 	// size of the shape
 	shpSize = 0.06,
 	// shape colour
-	shpCol = "rgba(255, 255, 255, 0.15)",
+	colR = 1,
+	colG = 1,
+	colB = 1,
+	colA = 0.15,
 	// turns percentage values to pixels
 	mult = view.size._height,
 	// how many times the shape rotates in a single outer rotation
@@ -76,8 +81,8 @@ function makeShapes() {
 // displays the shapes
 function showShapes() {
 	shapes.forEach( function(shp, i) {
-		shp.fillColor = shpCol;
-		shp.strokeColor = "rgba(255,255,255,0.35)";
+		shp.fillColor = "rgba(" + (colR * 255) + "," + (colG * 255) + "," + (colB * 255) + "," + colA + ")";
+		shp.strokeColor = "rgba(" + (colR * 255) + "," + (colG * 255) + "," + (colB * 255) + "," + (colA * 1.25) + ")";
 	});
 }
 
