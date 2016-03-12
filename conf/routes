@@ -5,6 +5,7 @@
 # Home page
 GET         /                    controllers.Application.index
 GET         /next                controllers.Application.getNext
+GET         /*pool/next          controllers.Application.getNextWithPool(pool)
 POST        /rating              controllers.Application.rateOrganism
 
 # Map static resources from the /public folder to the /assets URL path

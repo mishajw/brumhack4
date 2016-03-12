@@ -21,14 +21,14 @@ object Application extends Controller {
   /**
     * Get the next organism to rate
     */
-  def getNext = Action { implicit request =>
-    val pool = request getQueryString "pool" getOrElse defaultPool
-
+  def getNextWithPool(pool: String) = Action { implicit request =>
     DBHandler.organismToRate(pool) match {
       case None => errorJson("No organisms left.")
       case Some(o) => Ok(stringifyJson(o.toJson))
     }
   }
+
+  def getNext = getNextWithPool(defaultPool)
 
   /**
     * Rate an organism by ID
