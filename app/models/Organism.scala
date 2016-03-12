@@ -3,16 +3,18 @@ package models
 import org.json4s.JsonAST.JObject
 import org.json4s._
 
-class Organism( val id: Option[Long],
-                val fields: Map[String, Double],
-                val score: Int, val voteAmount: Int,
-                val firstGeneration: Int,
-                val lastGeneration: Int) {
+class Organism(val id: Option[Long],
+               val fields: Map[String, Double],
+               var rating: Double,
+               var voteAmount: Int,
+               var firstGeneration: Int,
+               var lastGeneration: Int) {
+
 
   def toJson: JObject = {
     val json: JObject = JObject(List(
       "id" -> JInt(id.get),
-      "score" -> JInt(score),
+      "score" -> JDouble(rating),
       "vote_amount" -> JInt(voteAmount),
       "first_generation" -> JInt(firstGeneration),
       "last_generation" -> JInt(lastGeneration),
@@ -26,7 +28,12 @@ class Organism( val id: Option[Long],
     json
   }
 
+  def rate(newRating: Double) = {
+    rating = ((rating * voteAmount) + newRating) / (voteAmount + 1)
+    voteAmount += 1
+  }
+
   override def toString: String = {
-    s"Organism($id, $fields, $score, $voteAmount, $firstGeneration, $lastGeneration)"
+    s"Organism($id, $fields, $rating, $voteAmount, $firstGeneration, $lastGeneration)"
   }
 }

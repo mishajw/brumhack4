@@ -103,12 +103,33 @@ object DBHandler {
          INSERT INTO organism (fields, score, vote_amount, first_generation, last_generation)
          VALUES (
             CAST(${mapToJsonFields(o.fields)} AS JSON),
-            ${o.score},
+            ${o.rating},
             ${o.voteAmount},
             ${o.firstGeneration},
             ${o.lastGeneration}
          )
        """.updateAndReturnGeneratedKey().apply()
+  }
+
+  def rateOrganism(id: Long, rating: Double): Boolean = {
+    val orgOpt: Option[Organism] = sql"""
+         SELECT * FROM organism
+         WHERE id = $id
+       """.map(resultSetToOrganism).single.apply()
+
+    orgOpt match {
+      case None => false
+      case Some(o) =>
+        o.rate(rating)
+
+        sql"""
+             UPDATE organism
+             SET score = ${o.rating}, vote_amount = ${o.voteAmount}
+             WHERE id = $id
+           """.update.apply()
+
+        true
+    }
   }
 
   private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(

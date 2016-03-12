@@ -20,6 +20,26 @@ object Application extends Controller {
     }
   }
 
+  def rateOrganism = Action { implicit request =>
+    Seq("id", "rating").map(request.getQueryString) match {
+      case Seq(Some(idStr), Some(ratingStr)) =>
+        try {
+          val id = idStr.toLong
+          val rating = ratingStr.toDouble
+
+          DBHandler.rateOrganism(id, rating) match {
+            case true => Ok("Done")
+            case false => errorJson("Couldn't rate organism, doesn't exist")
+          }
+        } catch {
+          case e: Throwable =>
+            errorJson("Input was not correct type")
+        }
+      case _ =>
+        errorJson("Not enough parameters: need ID and rating")
+    }
+  }
+
   private def stringifyJson(json: JValue) =
     JsonMethods.pretty(JsonMethods.render(json))
 
