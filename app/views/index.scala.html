@@ -5,8 +5,11 @@
 	<title>Spirograph-inator</title>
 	<link rel="stylesheet" href="@routes.Assets.at("stylesheets/style.css")">
 	<link rel="icon" href="@routes.Assets.at("images/favicon.png")"/>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 </head>
 <body>
+
+	<canvas keepalive="true" id="canvas" resize="true" data-paper-keepalive="true"></canvas>
 
 	<div class="vote">
 		<h1>Spirograph-inator</h1>
@@ -22,8 +25,6 @@
 		</div>
 		<p><small>Spirograph-inator uses machine learning and genetic algorithms to eventually display the "perfect" spirograph based on users' input.</small></p>
 	</div>
-
-	<canvas keepalive="true" id="canvas" resize="true" data-paper-keepalive="true"></canvas>
 
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/paper-full.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>

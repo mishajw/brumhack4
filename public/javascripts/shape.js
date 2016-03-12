@@ -107,7 +107,7 @@ function resizeCanvas() {
 	} else {
 		shapeGroup.scale(view.size._width / shapeGroup.bounds.width);
 	}
-	console.log(shapeGroup.position._x * 2, canvas.width);
+	paper.view.draw();
 }
 
 
