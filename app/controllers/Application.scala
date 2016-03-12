@@ -7,9 +7,9 @@ import org.json4s.JsonAST.{JObject, JString}
 import org.json4s.jackson.JsonMethods
 import play.api.mvc._
 
-import scala.util.Try
-
 object Application extends Controller {
+
+  private val defaultPool = "main"
 
   /**
     * Home page
@@ -21,8 +21,10 @@ object Application extends Controller {
   /**
     * Get the next organism to rate
     */
-  def getNext = Action {
-    DBHandler.organismToRate match {
+  def getNext = Action { implicit request =>
+    val pool = request getQueryString "pool" getOrElse defaultPool
+
+    DBHandler.organismToRate(pool) match {
       case None => errorJson("No organisms left.")
       case Some(o) => Ok(stringifyJson(o.toJson))
     }
@@ -47,13 +49,18 @@ object Application extends Controller {
       errorJson("Not enough parameters: need ID and rating")
     }
 
+    val pool = {
+      if (postVars contains "pool") postVars("pool")
+      else defaultPool
+    }
+
     try {
       val id = postVars("id").toLong
       val rating = postVars("rating").toDouble
 
       DBHandler.rateOrganism(id, rating) match {
         case true =>
-          GeneticOrganiser.checkForNewGeneration()
+          GeneticOrganiser.checkForNewGeneration(pool)
           Ok("Done")
         case false => errorJson("Couldn't rate organism, doesn't exist")
       }

@@ -4,15 +4,14 @@ import models.util.db.DBHandler
 
 object Main {
   def main(args: Array[String]) {
-    DBHandler.resetTables()
+//    DBHandler.resetTables()
 
-    GeneticOrganiser.generateInitialOrganisms()
+    val pool = "secondary"
 
-    val os = DBHandler.allOrganisms
+    GeneticOrganiser.generateInitialOrganisms(pool)
+    println(DBHandler.allOrganisms.mkString("\n"))
 
-    println(os.mkString("\n"))
-
-    GeneticOrganiser.moveToNextGeneration()
-
+    GeneticOrganiser.moveToNextGeneration(pool)
+    println(DBHandler.allOrganisms.mkString("\n"))
   }
 }

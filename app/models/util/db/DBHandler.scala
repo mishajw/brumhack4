@@ -43,10 +43,17 @@ object DBHandler {
           )
       """,
       sql"""
-          CREATE TABLE active (
-            organism_id SERIAL REFERENCES organism(id)
+          CREATE TABLE pool (
+            id SERIAL PRIMARY KEY,
+            title TEXT
           )
-      """
+         """,
+      sql"""
+          CREATE TABLE active (
+            organism_id SERIAL REFERENCES organism(id),
+            pool_id SERIAL REFERENCES pool(id)
+          )
+        """
     ).map(_.update.apply())
   }
 
@@ -59,6 +66,9 @@ object DBHandler {
            DROP TABLE IF EXISTS active
          """,
       sql"""
+           DROP TABLE IF EXISTS pool
+         """,
+      sql"""
            DROP TABLE IF EXISTS organism
          """
     ).map(_.update.apply())
@@ -66,13 +76,16 @@ object DBHandler {
 
   /**
     * Get all active organisms
+    *
     * @return
     */
-  def activeOrganisms: Seq[Organism] = {
+  def activeOrganisms(pool: String): Seq[Organism] = {
     sql"""
-         SELECT id, fields, score, vote_amount, first_generation, last_generation
-         FROM active A, organism O
+         SELECT O.id, O.fields, O.score, O.vote_amount, O.first_generation, O.last_generation
+         FROM active A, organism O, pool P
          WHERE A.organism_id = O.id
+         AND A.pool_id = P.id
+         AND P.title = $pool
        """
       .map(r => resultSetToOrganism(r))
       .list.apply()
@@ -80,12 +93,13 @@ object DBHandler {
 
   /**
     * All organism to have ever existed
+    *
     * @return
     */
   def allOrganisms: Seq[Organism] = {
     sql"""
-         SELECT id, fields, score, vote_amount, first_generation, last_generation
-         FROM organism
+         SELECT O.id, O.fields, O.score, O.vote_amount, O.first_generation, O.last_generation
+         FROM organism O
        """
       .map(r => resultSetToOrganism(r))
       .list.apply()
@@ -94,8 +108,8 @@ object DBHandler {
   /**
     * @return the next organism to be rated
     */
-  def organismToRate: Option[Organism] = {
-    activeOrganisms.sortBy(_.voteAmount) match {
+  def organismToRate(pool: String): Option[Organism] = {
+    activeOrganisms(pool).sortBy(_.voteAmount) match {
       case Seq() =>
         None
       case os =>
@@ -107,15 +121,18 @@ object DBHandler {
 
   /**
     * Insert an organism and make it active
+    *
     * @param o the organism to insert
     * @return the id of the organism
     */
-  def insertOrganismAsActive(o: Organism): Long = {
+  def insertOrganismAsActive(o: Organism, pool: String): Long = {
     val id = insertOrganism(o)
 
+    val poolId = insertPool(pool)
+
     sql"""
-          INSERT INTO active (organism_id)
-          VALUES ($id)
+          INSERT INTO active (organism_id, pool_id)
+          VALUES ($id, $poolId)
       """.update.apply()
 
     id
@@ -123,6 +140,7 @@ object DBHandler {
 
   /**
     * Insert an organism without making it active
+    *
     * @param o organism to insert
     * @return the id of the organism
     */
@@ -139,8 +157,21 @@ object DBHandler {
        """.updateAndReturnGeneratedKey().apply()
   }
 
+  def insertPool(pool: String): Long = {
+    sql"""
+         SELECT id FROM pool WHERE title = $pool
+       """.map(_.long("id")).single.apply() match {
+      case Some(id) => id
+      case None =>
+        sql"""
+              INSERT INTO pool (title) VALUES ($pool)
+           """.updateAndReturnGeneratedKey().apply()
+    }
+  }
+
   /**
     * Register a rating of an organism
+    *
     * @param id the ID of the organism
     * @param rating the new rating of the organism
     * @return whether or not the registration succeeded
@@ -169,15 +200,20 @@ object DBHandler {
   /**
     * @param o the organism to make inactive
     */
-  def removeOrganism(o: Organism): Unit = {
+  def removeOrganism(o: Organism, pool: String): Unit = {
+
+    val poolId = insertPool(pool)
+
     sql"""
          DELETE FROM active
          WHERE organism_id = ${o.id.get}
+         AND pool_id = $poolId
        """.update.apply()
   }
 
   /**
     * Cast a result set from postgres to an organism
+    *
     * @param r the result set
     * @return the organism
     */
@@ -191,6 +227,7 @@ object DBHandler {
 
   /**
     * Cast a JSON string to a map of variables
+    *
     * @param rawJson the raw JSON string
     * @return map of variable name to value
     */
@@ -206,6 +243,7 @@ object DBHandler {
 
   /**
     * Cast a map of variables to a JSON string
+    *
     * @param map map of variable name to value
     * @return the raw JSON string
     */

@@ -1,5 +1,6 @@
 package models
 
+import akka.routing.Pool
 import models.util.db.DBHandler
 
 import scala.util.Random
@@ -23,6 +24,7 @@ object GeneticOrganiser {
 
   /**
     * A variable that can be changed
+ *
     * @param name the name of the variable
     * @param lowerBound max value
     * @param upperBound min value
@@ -50,37 +52,37 @@ object GeneticOrganiser {
   /**
     * Check if there should be a new generation
     */
-  def checkForNewGeneration(): Unit = {
-    if (!everythingRated) return
+  def checkForNewGeneration(pool: String): Unit = {
+    if (!everythingRated(pool)) return
 
-    moveToNextGeneration()
+    moveToNextGeneration(pool)
   }
 
   /**
     * Move to the next generation
     */
-  def moveToNextGeneration(): Unit = {
+  def moveToNextGeneration(pool: String): Unit = {
     generation += 1
 
-    val lastGeneration = DBHandler.activeOrganisms
+    val lastGeneration = DBHandler.activeOrganisms(pool)
     val parents = bestParents(lastGeneration)
     val children = mutate(breed(parents))
     val progressedParents = Random.shuffle(parents).take(generationSize - breedSize)
 
     lastGeneration
       .filterNot(progressedParents.contains)
-      .foreach(DBHandler.removeOrganism)
+      .foreach(DBHandler.removeOrganism(_, pool))
 
     children
-      .foreach(DBHandler.insertOrganismAsActive)
+      .foreach(DBHandler.insertOrganismAsActive(_, pool))
   }
 
   /**
     * Generate the first generation of organisms
     */
-  def generateInitialOrganisms() = {
+  def generateInitialOrganisms(pool: String) = {
     for (i <- 0 to generationSize) {
-      DBHandler.insertOrganismAsActive(randomOrganism)
+      DBHandler.insertOrganismAsActive(randomOrganism, pool)
     }
   }
 
@@ -95,6 +97,7 @@ object GeneticOrganiser {
 
   /**
     * Breed a set of parents to create children
+ *
     * @param parents the parents to breed
     * @return the lovely ity-bity babies
     */
@@ -109,6 +112,7 @@ object GeneticOrganiser {
 
   /**
     * Mutate children (not in a cruel way?)
+ *
     * @param os the organism to mutate
     * @return the mutated organisms
     */
@@ -129,6 +133,7 @@ object GeneticOrganiser {
 
   /**
     * Get a variable by a name
+ *
     * @param name the name of the variable
     * @return the variable
     */
@@ -138,13 +143,15 @@ object GeneticOrganiser {
 
   /**
     * Check if everything has been rated
+ *
     * @return true if everything is rated
     */
-  private def everythingRated =
-    !DBHandler.activeOrganisms.exists(_.rating == 0)
+  private def everythingRated(pool: String) =
+    !DBHandler.activeOrganisms(pool).exists(_.rating == 0)
 
   /**
     * Generate a random organism
+ *
     * @return the new organism
     */
   def randomOrganism: Organism = {
