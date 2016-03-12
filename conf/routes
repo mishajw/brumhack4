@@ -3,11 +3,11 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /getNext                    controllers.Application.getNext
-POST    /rateOrganism               controllers.Application.rateOrganism
+GET         /                    controllers.Application.index
+GET         /next                controllers.Application.getNext
+POST        /rating              controllers.Application.rateOrganism
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET         /assets/*file        controllers.Assets.at(path="/public", file)
 
     
