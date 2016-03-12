@@ -1,5 +1,6 @@
 package controllers
 
+import models.GeneticOrganiser
 import models.util.db.DBHandler
 import org.json4s.JValue
 import org.json4s.JsonAST.{JString, JObject}
@@ -28,7 +29,9 @@ object Application extends Controller {
           val rating = ratingStr.toDouble
 
           DBHandler.rateOrganism(id, rating) match {
-            case true => Ok("Done")
+            case true =>
+              GeneticOrganiser.checkForNewGeneration()
+              Ok("Done")
             case false => errorJson("Couldn't rate organism, doesn't exist")
           }
         } catch {

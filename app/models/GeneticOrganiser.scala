@@ -35,7 +35,7 @@ object GeneticOrganiser {
     moveToNextGeneration()
   }
 
-  def moveToNextGeneration(): Unit = {
+  private def moveToNextGeneration(): Unit = {
     generation += 1
 
     val lastGeneration = DBHandler.activeOrganisms
