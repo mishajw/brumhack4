@@ -36,7 +36,7 @@ object Application extends Controller {
   }
 
   def setupPoolAction(pool: String) = Action { implicit request =>
-    val rawJson = try {
+    try {
       val rawJson = request.body.asFormUrlEncoded.get("fields").head
       setupPool(rawJson)
     } catch {
