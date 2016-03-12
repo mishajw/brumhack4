@@ -10,9 +10,21 @@ class Organism(val id: Option[Long],
                var firstGeneration: Int,
                var lastGeneration: Int) {
 
+  /**
+    * Initialise with basic fields
+    * @param fields the fields of the shape
+    * @param generation the generation it's in
+    * @return new organism
+    */
   def this(fields: Map[String, Double], generation: Int) =
     this(None, fields, 0, 0, generation, generation)
 
+  /**
+    * Initialise with two parents, and take the averages of their fields
+    * @param mummy
+    * @param daddy
+    * @param generation
+    */
   def this(mummy: Organism, daddy: Organism, generation: Int) = {
     this({
       mummy.fields.map { case (k, v) =>
@@ -21,6 +33,10 @@ class Organism(val id: Option[Long],
     }, generation)
   }
 
+  /**
+    * Cast to JSON
+    * @return JSON object
+    */
   def toJson: JObject = {
     val json: JObject = JObject(List(
       "id" -> JInt(id.get),
@@ -38,6 +54,9 @@ class Organism(val id: Option[Long],
     json
   }
 
+  /**
+    * @param newRating the new rating to register
+    */
   def rate(newRating: Double) = {
     rating = ((rating * voteAmount) + newRating) / (voteAmount + 1)
     voteAmount += 1
