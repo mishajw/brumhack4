@@ -6,9 +6,9 @@ import scala.util.Random
 
 object GeneticOrganiser {
 
-  val generationSize = 100
+  val generationSize = 10
   val parentPercentage = 0.5
-  val parentProgressRate = 0.05
+  val parentProgressRate = 0.1
   lazy val breedSize = (generationSize * (1 - parentProgressRate)).toInt
   val mutationProbability = 0.1
   val mutationAmount = 0.2
@@ -35,7 +35,7 @@ object GeneticOrganiser {
     moveToNextGeneration()
   }
 
-  private def moveToNextGeneration(): Unit = {
+  def moveToNextGeneration(): Unit = {
     generation += 1
 
     val lastGeneration = DBHandler.activeOrganisms
