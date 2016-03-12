@@ -1,5 +1,7 @@
 package models.util.db
 
+import java.text.ParseException
+
 import models.Organism
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -55,7 +57,7 @@ object DBHandler {
 
   def activeOrganisms: Seq[Organism] = {
     sql"""
-         SELECT fields, score, vote_amount, first_generation, last_generation
+         SELECT id, fields, score, vote_amount, first_generation, last_generation
          FROM active A, organism O
          WHERE A.organism_id = O.id
        """
@@ -65,7 +67,7 @@ object DBHandler {
 
   def allOrganisms: Seq[Organism] = {
     sql"""
-         SELECT fields, score, vote_amount, first_generation, last_generation
+         SELECT id, fields, score, vote_amount, first_generation, last_generation
          FROM organism
        """
       .map(r => resultSetToOrganism(r))
@@ -98,6 +100,7 @@ object DBHandler {
   }
 
   private def resultSetToOrganism(r: WrappedResultSet): Organism = new Organism(
+    r.longOpt("id"),
     jsonFieldsToMap(r.string("fields")),
     r.int("score"),
     r.int("vote_amount"),
@@ -110,6 +113,7 @@ object DBHandler {
         vars.map { case JField(k, JDouble(v)) =>
           k -> v
         }.toMap
+      case _ => Map()
     }
   }
 
