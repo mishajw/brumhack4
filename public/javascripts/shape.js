@@ -158,13 +158,14 @@ $.ajax({
     console.log("HELP!");
 });
 
-$(".row input").on('click', function(event) {
+function submitRating(value){
+	console.log(value);
 	$.ajax({
 		url: '/rating',
 		type: 'POST',
 		data: {
 			id: shpId,
-			rating: $(this).val(),
+			rating: value,
 		},
 	})
 	.done(function() {
@@ -173,5 +174,14 @@ $(".row input").on('click', function(event) {
 	.fail(function() {
 		console.log("error");
 	});
+}
+
+$(".row input").on('click', function() {
+	submitRating($(this).val());
 });
-   
+document.addEventListener('keydown', function(event) {
+	var keycode = event.keyCode;
+	if(keycode >= 49 && keycode <= 53) {
+		submitRating(keycode - 48);
+	}
+});
