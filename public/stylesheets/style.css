@@ -14,11 +14,9 @@ body {
 }
 
 canvas {
-	background-color: #333;
 	height: 100vh;
 	width: calc(100vw - 400px);
 	display: block;
-	background-color: #333;
 }
 
 .vote {
