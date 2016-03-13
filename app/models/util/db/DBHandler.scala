@@ -119,6 +119,18 @@ object DBHandler {
       .list.apply()
   }
 
+  def organismsOfGeneration(generation: Int, pool: String): Seq[Organism] = {
+    sql"""
+         SELECT O.id, O.fields, O.score, O.vote_amount, O.first_generation, O.last_generation
+         FROM organism O, pool P, active A
+         WHERE O.id = A.organism_id
+         AND P.id = A.pool_id
+         AND P.title = $pool
+         AND O.first_generation <= $generation
+         AND O.last_generation >= $generation
+       """.map(resultSetToOrganism).list.apply()
+  }
+
   /**
     * @return the next organism to be rated
     */

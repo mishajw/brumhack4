@@ -1,6 +1,6 @@
 package controllers
 
-import models.{FieldDefinition, GeneticOrganiser}
+import models.{Organism, FieldDefinition, GeneticOrganiser}
 import models.util.db.DBHandler
 import org.json4s._
 import org.json4s.JsonAST.{JObject, JString}
@@ -56,6 +56,20 @@ object Application extends Controller {
     // Create the first generation of the pool
     GeneticOrganiser.generateInitialOrganisms(pool)
   }
+
+  def getAverageOfGenerationWithPool(pool: String) = Action { implicit request =>
+    val generation = request.getQueryString("generation").get.toInt
+
+    val ofGeneration = DBHandler.organismsOfGeneration(generation, pool)
+
+    if (ofGeneration.isEmpty) {
+      errorJson("No organisms of generation")
+    } else {
+      Ok(stringifyJson(new Organism(ofGeneration, generation).toJson))
+    }
+  }
+
+  def getAverageOfGeneration = getAverageOfGenerationWithPool(defaultPool)
 
   /**
     * Get the next organism to rate

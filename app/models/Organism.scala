@@ -33,13 +33,21 @@ class Organism(val id: Option[Long],
     }, generation)
   }
 
+  def this(group: Seq[Organism], generation: Int) = {
+    this({
+      group.head.fields.map { case (k, _) =>
+        k -> group.map(_.fields(k)).sum / group.size
+      }
+    }, generation)
+  }
+
   /**
     * Cast to JSON
     * @return JSON object
     */
   def toJson: JObject = {
     val json: JObject = JObject(List(
-      "id" -> JInt(id.get),
+      "id" -> JInt(id.getOrElse(-1).asInstanceOf[Int]),
       "score" -> JDouble(rating),
       "vote_amount" -> JInt(voteAmount),
       "first_generation" -> JInt(firstGeneration),

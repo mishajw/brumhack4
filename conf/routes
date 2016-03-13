@@ -6,6 +6,8 @@
 GET         /                    controllers.Application.index
 GET         /next                controllers.Application.getNext
 GET         /*pool/next          controllers.Application.getNextWithPool(pool)
+GET         /ofgeneration        controllers.Application.getAverageOfGeneration
+GET         /*pool/ofgeneration  controllers.Application.getAverageOfGenerationWithPool(pool)
 POST        /rating              controllers.Application.rateOrganism
 POST        /*pool/setup         controllers.Application.setupPoolAction(pool)
 
