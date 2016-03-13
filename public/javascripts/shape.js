@@ -25,26 +25,6 @@ var shpSides = 3,
 	rotRev = 1
 ;
 
-
-if(getUrlVars()["rad"] != undefined){
-	shpRad = parseFloat(getUrlVars()["rad"]);
-}
-if(getUrlVars()["num"] != undefined){
-	shpNum = parseFloat(getUrlVars()["num"]);
-}
-if(getUrlVars()["rev"] != undefined){
-	angleRev = parseFloat(getUrlVars()["rev"]);
-}
-if(getUrlVars()["offset"] != undefined){
-	shpOffset = parseFloat(getUrlVars()["offset"]);
-}
-if(getUrlVars()["rot"] != undefined){
-	rotRev = parseFloat(getUrlVars()["rot"]);
-}
-if(getUrlVars()["size"] != undefined){
-	shpSize = parseFloat(getUrlVars()["size"]);
-}
-
 var shapes = [];
 var shapeGroup;
 
@@ -85,6 +65,7 @@ function showShapes() {
 		shp.fillColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + shpColA + ")";
 		shp.strokeColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + (shpColA * 1.25) + ")";
 	});
+	$("canvas").css('background-color', 'rgb(' + (255-shpColR) + ',' + (255-shpColG) + ', ' + (255-shpColB) + ')');
 }
 
 // transforms all of the shapes
@@ -108,22 +89,6 @@ function resizeCanvas() {
 		shapeGroup.scale(view.size._width / shapeGroup.bounds.width);
 	}
 	paper.view.draw();
-}
-
-
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
 }
 
 $.ajax({
