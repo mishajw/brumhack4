@@ -21,11 +21,11 @@ object Application extends Controller {
     FieldDefinition("shpRad", 0, 1),
     FieldDefinition("shpRot", 0, 100),
     FieldDefinition("shpOffset", 0, 4),
-    FieldDefinition("shpSize", 0, 0.5),
+    FieldDefinition("shpSize", 0.05, 0.4),
     FieldDefinition("shpColR", 0, 1),
     FieldDefinition("shpColG", 0, 1),
     FieldDefinition("shpColB", 0, 1),
-    FieldDefinition("shpColA", 0.1, 0.5),
+    FieldDefinition("shpColA", 0.1, 0.3),
     FieldDefinition("angleRev", 1, 10),
     FieldDefinition("rotRev", 0, 8)
 

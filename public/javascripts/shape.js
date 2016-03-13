@@ -78,7 +78,8 @@ function showShapes() {
 		shp.fillColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + shpColA + ")";
 		shp.strokeColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + (shpColA * 1.25) + ")";
 	});
-	$("body, html, canvas").css('background-color', 'rgb(' + (255-shpColR) + ',' + (255-shpColG) + ', ' + (255-shpColB) + ')');
+        $("body, html, canvas").css("background-color", "rgb(" + Math.round(255-shpColR) + "," + Math.round(255-shpColG) + "," + Math.round(255-shpColB) + ")");
+        console.log("rgb(" + (255-shpColR) + "," + (255-shpColG) + "," + (255-shpColB) + ")");
 }
 
 // transforms all of the shapes
