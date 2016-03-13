@@ -77,6 +77,10 @@ object Application extends Controller {
     * Get the next organism to rate
     */
   def getNextWithPool(pool: String) = Action { implicit request =>
+    if (DBHandler.getPoolId(pool).isEmpty) {
+      setupPool(pool, fieldDefinitionsToJson(defaultFieldDefinitions))
+    }
+
     DBHandler.organismToRate(pool) match {
       case None => errorJson("No organisms left.")
       case Some(o) => Ok(stringifyJson(o.toJson))
