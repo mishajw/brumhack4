@@ -78,7 +78,7 @@ function showShapes() {
 		shp.fillColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + shpColA + ")";
 		shp.strokeColor = "rgba(" + shpColR + "," + shpColG + "," + shpColB + "," + (shpColA * 1.25) + ")";
 	});
-	$("canvas").css('background-color', 'rgb(' + (255-shpColR) + ',' + (255-shpColG) + ', ' + (255-shpColB) + ')');
+	$("body, html, canvas").css('background-color', 'rgb(' + (255-shpColR) + ',' + (255-shpColG) + ', ' + (255-shpColB) + ')');
 }
 
 // transforms all of the shapes
