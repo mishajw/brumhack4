@@ -34,9 +34,11 @@ object Application extends Controller {
   /**
     * Home page
     */
-  def index = Action {
+  def indexWithPool(pool: String) = Action {
     Ok(views.html.index())
   }
+
+  def index = indexWithPool(defaultPool)
 
   def setupPoolAction(pool: String) = Action { implicit request =>
     try {

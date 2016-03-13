@@ -4,6 +4,7 @@
 
 # Home page
 GET         /                    controllers.Application.index
+GET         /pool/$pool<.*>      controllers.Application.indexWithPool(pool)
 GET         /next                controllers.Application.getNext
 GET         /*pool/next          controllers.Application.getNextWithPool(pool)
 GET         /ofgeneration        controllers.Application.getAverageOfGeneration

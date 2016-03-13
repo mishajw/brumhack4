@@ -28,6 +28,19 @@ var shpSides = 3,
 var shapes = [];
 var shapeGroup;
 
+function getPool() {
+	var poolRegex = new RegExp("\/pool\/(.*)");
+	var result = document.location.pathname.match(poolRegex);
+
+	if (result) {
+		return result[1];
+	} else {
+		return "main"
+	}
+}
+
+var pool = getPool();
+
 // creates a shape
 function makeShape(sides, size, posX, posY, rot){
 
@@ -93,7 +106,7 @@ function resizeCanvas() {
 
 $.ajax({
       dataType: "json",
-      url: "/next",
+      url: "/" + pool + "/next"
 })
 .done(function(toMuchData) {
     console.log("WOOOO");
@@ -130,8 +143,8 @@ function submitRating(value){
 		type: 'POST',
 		data: {
 			id: shpId,
-			rating: value,
-		},
+			rating: value
+		}
 	})
 	.done(function() {
 	    document.location.reload(false);	
