@@ -2,6 +2,7 @@ package models
 
 import org.json4s.JsonAST.JObject
 import org.json4s._
+import scala.math.sqrt
 
 class Organism(val id: Option[Long],
                val fields: Map[String, Double],
@@ -47,7 +48,7 @@ class Organism(val id: Option[Long],
     */
   def toJson: JObject = {
     val json: JObject = JObject(List(
-      "id" -> JInt(id.getOrElse(-1).asInstanceOf[Int]),
+      "id" -> JInt(id.getOrElse(-1l).asInstanceOf[Int]),
       "score" -> JDouble(rating),
       "vote_amount" -> JInt(voteAmount),
       "first_generation" -> JInt(firstGeneration),
@@ -72,5 +73,11 @@ class Organism(val id: Option[Long],
 
   override def toString: String = {
     s"Organism($id, $fields, $rating, $voteAmount, $firstGeneration, $lastGeneration)"
+  }
+
+  def distance(other: Organism): Double = {
+    val pythag = fields.map { case (k,v) => k -> (v * v  + other.fields(k) * other.fields(k)) }
+    val sum = pythag.foldLeft(0d)((acc, kv) => acc  + kv._2)
+    math.sqrt(sum)
   }
 }

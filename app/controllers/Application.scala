@@ -17,7 +17,7 @@ object Application extends Controller {
 
   private val defaultFieldDefinitions = Seq(
     FieldDefinition("shpSides", 1, 7),
-    FieldDefinition("shpNum", 0, 500),
+    FieldDefinition("shpNum", 1, 500),
     FieldDefinition("shpRad", 0, 1),
     FieldDefinition("shpRot", 0, 100),
     FieldDefinition("shpOffset", 0, 4),

@@ -12,9 +12,9 @@ object GeneticOrganiser {
   /**
     * Generation variables
     */
-  val generationSize = 10
-  val parentPercentage = 0.5
-  val parentProgressRate = 0.1
+  val generationSize = 20
+  val parentPercentage = 1 
+  val parentProgressRate = 0.5
   lazy val breedSize = (generationSize * (1 - parentProgressRate)).toInt
   val mutationProbability = 0.1
   val mutationAmount = 0.2
@@ -93,13 +93,26 @@ object GeneticOrganiser {
     * @return the lovely ity-bity babies
     */
   private def breed(parents: Seq[Organism]): Seq[Organism] = {
+    val datingPool = parents
+    log.debug(breedSize.toString())
     for (i <- 0 to breedSize) yield {
-      new Organism(
+      /*new Organism(
         parents(Random.nextInt(parents.size)),
         parents(Random.nextInt(parents.size)),
-        generation)
+        generation)*/
+      val male = datingPool(i)
+      //datingPool = datingPool.filter(!_.equals(male))
+      val female = findMatch(male, datingPool.filter(!_.equals(male)))
+      //datingPool = datingPool.filter(!_.equals(female))
+      log.debug(male.toString())
+      log.debug(female.toString())
+      new Organism(male, female, generation)
     }
   }
+
+  private def findMatch(male: Organism, datingPool: Seq[Organism]): Organism = {
+    datingPool.reduceLeft( (best, competition) => if (male.distance(best) < male.distance(competition)) best else competition)
+}
 
   /**
     * Mutate children (not in a cruel way?)
