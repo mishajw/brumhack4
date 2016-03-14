@@ -17,7 +17,7 @@ object DBHandler {
 
   lazy implicit val session = {
     Class.forName("org.postgresql.Driver")
-    ConnectionPool.singleton("jdbc:postgresql://localhost/spirovolution", null, null)
+    ConnectionPool.singleton("jdbc:postgresql://localhost/spirovolution", "misha", null)
 
     GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(
       enabled = false
